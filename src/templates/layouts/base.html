@@ -142,43 +142,29 @@
         }
         
         .table-of-contents li {
-            margin: 8px 0;
+            margin: 4px 0;
             position: relative;
         }
         
         /* Indentación por niveles */
         .table-of-contents ul ul {
-            padding-left: 25px;
+            padding-left: 20px;
         }
         
         .table-of-contents a {
             color: var(--text-color);
             text-decoration: none;
             display: block;
-            padding: 4px 0;
+            padding: 2px 0;
             transition: all 0.2s ease;
         }
         
         .table-of-contents a:hover {
             color: var(--primary-color);
-            padding-left: 5px;
+            padding-left: 3px;
         }
         
-        /* Bullets personalizados para TOC */
-        .table-of-contents > ul > li::before {
-            content: "○";
-            position: absolute;
-            left: -20px;
-            color: var(--primary-color);
-        }
-        
-        .table-of-contents ul ul li::before {
-            content: "▪";
-            position: absolute;
-            left: -20px;
-            color: var(--secondary-color);
-            font-size: 0.8em;
-        }
+        /* Sin viñetas en la tabla de contenidos */
         
         /* ==================== */
         /* CONTENIDO DOCUMENTO */
