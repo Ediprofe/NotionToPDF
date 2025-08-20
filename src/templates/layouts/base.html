@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     
-    <!-- Estilos inline críticos para PDF -->
+    <!-- KaTeX CSS para matemáticas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    
+    <!-- Estilos inline para PDF -->
     <style>
-        /* Reset y variables CSS */
+        /* ==================== */
+        /* RESET Y VARIABLES   */
+        /* ==================== */
         * {
             margin: 0;
             padding: 0;
@@ -15,14 +20,23 @@
         }
         
         :root {
-            --primary-color: {{themeColors.primary}};
-            --secondary-color: {{themeColors.secondary}};
-            --accent-color: {{themeColors.accent}};
+            --primary-color: {{themeColors.primaryColor}};
+            --secondary-color: {{themeColors.secondaryColor}};
+            --accent-color: {{themeColors.accentColor}};
             --text-color: #212529;
             --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
             --border-radius: 8px;
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.15);
+        }
+        
+        /* ==================== */
+        /* CONFIGURACIÓN BASE  */
+        /* ==================== */
+        @page {
+            size: A4;
+            margin: 0;
         }
         
         body {
@@ -30,22 +44,28 @@
             line-height: 1.6;
             color: var(--text-color);
             background: white;
+            margin: 0;
+            padding: 0;
         }
         
-        /* Header ribbon */
+        /* ==================== */
+        /* HEADER RIBBON       */
+        /* ==================== */
         .header-ribbon {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             height: 60px;
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             display: flex;
             align-items: center;
             padding: 0 30px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             z-index: 1000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header-content {
@@ -58,40 +78,49 @@
         .header-author {
             font-size: 14px;
             font-weight: 500;
+            opacity: 0.95;
         }
         
         .header-title {
             font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            text-align: center;
+            flex-grow: 1;
         }
         
         .header-website {
             font-size: 14px;
             font-weight: 500;
+            opacity: 0.95;
         }
         
-        /* CORRECCIÓN 1: Contenido principal con espaciado consistente */
+        /* ==================== */
+        /* CONTENIDO PRINCIPAL */
+        /* ==================== */
         .main-content {
-            margin-top: 80px;
-            padding: 40px;
+            padding-top: 100px; /* Espaciado desde el header */
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-bottom: 40px;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
         }
         
-        /* CORRECCIÓN 2: Tabla de contenidos con salto de página garantizado */
+        /* ==================== */
+        /* TABLA DE CONTENIDOS */
+        /* ==================== */
         .toc-container {
-            background: var(--accent-color);
+            background: linear-gradient(135deg, rgba(var(--primary-color), 0.05) 0%, rgba(var(--secondary-color), 0.05) 100%);
+            border: 2px solid var(--accent-color);
             border-radius: var(--border-radius);
             padding: 30px;
-            margin-bottom: 0; /* Sin margen inferior */
+            margin-bottom: 40px;
             page-break-after: always;
-            /* Forzar salto de página en todos los navegadores */
             break-after: page;
         }
         
-        .toc-title {
+        .toc-container h2 {
             color: var(--primary-color);
             font-size: 24px;
             font-weight: 700;
@@ -101,165 +130,302 @@
             gap: 10px;
         }
         
-        .toc-title::before {
+        .toc-container h2::before {
             content: "📋";
             font-size: 28px;
         }
         
-        .toc-list {
+        .table-of-contents ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         
-        .toc-item {
+        .table-of-contents li {
             margin: 8px 0;
-            padding-left: 20px;
+            position: relative;
         }
         
-        .toc-item a {
+        /* Indentación por niveles */
+        .table-of-contents ul ul {
+            padding-left: 25px;
+        }
+        
+        .table-of-contents a {
             color: var(--text-color);
             text-decoration: none;
-            transition: color 0.2s;
+            display: block;
+            padding: 4px 0;
+            transition: all 0.2s ease;
         }
         
-        .toc-item a:hover {
+        .table-of-contents a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+        
+        /* Bullets personalizados para TOC */
+        .table-of-contents > ul > li::before {
+            content: "○";
+            position: absolute;
+            left: -20px;
             color: var(--primary-color);
         }
         
-        .toc-item-h2 {
-            padding-left: 40px;
+        .table-of-contents ul ul li::before {
+            content: "▪";
+            position: absolute;
+            left: -20px;
+            color: var(--secondary-color);
+            font-size: 0.8em;
         }
         
-        .toc-item-h3 {
-            padding-left: 60px;
-        }
-        
-        /* CORRECCIÓN 3: Container del documento con espaciado consistente */
+        /* ==================== */
+        /* CONTENIDO DOCUMENTO */
+        /* ==================== */
         .document-content {
-            /* Cuando hay TOC, este elemento comienza en nueva página */
-            /* Cuando no hay TOC, mantiene el espaciado normal */
+            /* El contenido después del TOC empieza en nueva página */
         }
         
-        /* CORRECCIÓN 4: Tipografía con manejo consistente de primer elemento */
+        /* ==================== */
+        /* TIPOGRAFÍA          */
+        /* ==================== */
         h1 {
             font-size: 32px;
             font-weight: 700;
-            color: var(--text-color);
-            margin: 40px 0 20px; /* Margen consistente para todos los H1 */
-            page-break-before: always;
+            color: var(--primary-color);
+            margin: 40px 0 20px;
+            padding-top: 20px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
             letter-spacing: -0.5px;
         }
         
-        /* SOLUCIÓN ESPECÍFICA: Primer H1 después del TOC o al inicio */
-        .document-content > h1:first-child,
-        .main-content > .document-content > h1:first-child {
-            page-break-before: auto; /* No salto antes del primer H1 del contenido */
-            margin-top: 0; /* Sin margen superior para consistencia */
-            padding-top: 20px; /* Padding para espaciado visual */
+        /* Todos los H1 excepto el primero tienen salto de página */
+        h1:not(:first-child) {
+            page-break-before: always;
+            break-before: page;
+            padding-top: 100px; /* Compensar el header fijo */
         }
         
-        /* Cuando NO hay TOC, el primer H1 debe tener margen normal */
-        .main-content > .document-content > h1:first-child:not(.after-toc) {
+        /* El primer H1 después del TOC */
+        .document-content > h1:first-child {
+            page-break-before: auto;
+            padding-top: 100px; /* Compensar el header fijo */
             margin-top: 0;
-            padding-top: 0;
         }
         
         h2 {
             font-size: 24px;
             font-weight: 600;
-            color: var(--text-color);
+            color: var(--secondary-color);
             margin: 30px 0 15px;
+            padding-left: 10px;
+            border-left: 4px solid var(--accent-color);
         }
         
         h3 {
             font-size: 20px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text-color);
             margin: 25px 0 10px;
+        }
+        
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
         }
         
         p {
             margin-bottom: 15px;
+            text-align: justify;
+            text-justify: inter-word;
         }
         
-        /* Listas */
+        /* ==================== */
+        /* LISTAS              */
+        /* ==================== */
         ul, ol {
             margin: 15px 0;
             padding-left: 30px;
         }
         
         li {
-            margin: 5px 0;
+            margin: 8px 0;
         }
         
-        /* Código */
+        /* Listas anidadas con bullets personalizados */
+        ul li::marker {
+            color: var(--primary-color);
+        }
+        
+        ul ul li::marker {
+            color: var(--secondary-color);
+        }
+        
+        /* ==================== */
+        /* CÓDIGO              */
+        /* ==================== */
         code {
-            background: #f8f9fa;
+            background: var(--bg-light);
+            color: var(--primary-color);
             padding: 2px 6px;
             border-radius: 4px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
             font-size: 0.9em;
         }
         
         pre {
-            background: #f8f9fa;
+            background: var(--bg-light);
+            border: 1px solid var(--accent-color);
             padding: 15px;
             border-radius: var(--border-radius);
             overflow-x: auto;
             margin: 20px 0;
         }
         
-        /* Matemáticas */
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* ==================== */
+        /* MATEMÁTICAS         */
+        /* ==================== */
         .katex-display {
             margin: 20px 0;
             overflow-x: auto;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
         }
         
-        /* CORRECCIÓN 5: Saltos de página mejorados */
+        .katex {
+            font-size: 1.1em;
+        }
+        
+        /* ==================== */
+        /* TABLAS              */
+        /* ==================== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        th {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--accent-color);
+        }
+        
+        tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+        
+        /* ==================== */
+        /* SALTOS DE PÁGINA    */
+        /* ==================== */
         .page-break {
             page-break-after: always;
             break-after: page;
             height: 0;
             margin: 0;
             padding: 0;
+            visibility: hidden;
         }
         
-        /* Print specific - CORRECCIONES DE PRINT */
+        hr {
+            border: none;
+            page-break-after: always;
+            break-after: page;
+        }
+        
+        /* ==================== */
+        /* BLOCKQUOTES         */
+        /* ==================== */
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text-muted);
+            background: var(--bg-light);
+            padding: 15px 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        /* ==================== */
+        /* MEDIA PRINT         */
+        /* ==================== */
         @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
             .header-ribbon {
                 position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
             .main-content {
-                margin-top: 80px;
+                padding-top: 100px;
             }
             
-            /* Asegurar saltos de página en impresión */
             .toc-container {
                 page-break-after: always !important;
                 break-after: page !important;
             }
             
-            .page-break {
-                page-break-after: always !important;
-                break-after: page !important;
+            h1:not(:first-child) {
+                page-break-before: always !important;
+                break-before: page !important;
+                padding-top: 100px !important;
+            }
+            
+            .document-content > h1:first-child {
+                padding-top: 100px !important;
             }
             
             /* Evitar saltos de página no deseados */
-            h1, h2, h3 {
+            h2, h3, h4, h5, h6 {
                 page-break-after: avoid;
                 break-after: avoid;
             }
+            
+            p, li, blockquote {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            /* Asegurar que los colores se impriman */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
-    
-    <!-- KaTeX CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
 </head>
 <body>
-    <!-- Header Ribbon -->
+    <!-- Header Ribbon Fijo -->
     <div class="header-ribbon">
         <div class="header-content">
             <div class="header-author">{{author}}</div>
@@ -268,17 +434,19 @@
         </div>
     </div>
     
-    <!-- Main Content -->
+    <!-- Contenido Principal -->
     <div class="main-content">
         {{#if showTOC}}
-        <!-- Table of Contents -->
+        <!-- Tabla de Contenidos -->
         <div class="toc-container">
-            <h2 class="toc-title">Índice</h2>
-            {{{tocContent}}}
+            <h2>Índice</h2>
+            <nav class="table-of-contents">
+                {{{tocContent}}}
+            </nav>
         </div>
         {{/if}}
         
-        <!-- Document Content -->
+        <!-- Contenido del Documento -->
         <div class="document-content">
             {{{content}}}
         </div>

@@ -1,23 +1,16 @@
 // ARCHIVO: src/processors/PageBreakProcessor.js
-// Procesador de saltos de página automáticos
+// Procesador de saltos de página automáticos - VERSIÓN MEJORADA
 
 class PageBreakProcessor {
   process(html) {
-    // Añadir saltos de página antes de cada H1 (excepto el primero)
     let processedHTML = html;
     
-    // Reemplazar todos los H1 (excepto el primero) con un salto de página antes
-    let isFirstH1 = true;
-    processedHTML = processedHTML.replace(/<h1/g, (match) => {
-      if (isFirstH1) {
-        isFirstH1 = false;
-        return match;
-      }
-      return '<div class="page-break"></div>' + match;
-    });
-    
-    // También procesar las líneas horizontales (---) como saltos de página
+    // Reemplazar las líneas horizontales (---) con saltos de página
     processedHTML = processedHTML.replace(/<hr\s*\/?>/g, '<div class="page-break"></div>');
+    
+    // NO añadir saltos automáticos antes de H1 aquí
+    // Los saltos de página para H1 se manejan mediante CSS en el template
+    // Esto evita saltos duplicados y problemas de espaciado
     
     return processedHTML;
   }
