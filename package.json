@@ -1,0 +1,47 @@
+{
+  "name": "notion-to-pdf-pro",
+  "version": "3.0.0",
+  "description": "Sistema profesional de conversión de Notion a PDF con diseño elegante",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "node scripts/build.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js"
+  },
+  "keywords": [
+    "notion",
+    "pdf",
+    "converter",
+    "markdown"
+  ],
+  "author": "NotionToPDF Pro Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "5.6.0",
+    "commander": "14.0.0",
+    "dotenv": "17.2.1",
+    "gray-matter": "4.0.3",
+    "handlebars": "4.7.8",
+    "js-yaml": "4.1.0",
+    "jsdom": "26.1.0",
+    "katex": "0.16.22",
+    "marked": "16.2.0",
+    "puppeteer": "24.16.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "eslint": "9.33.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.4",
+    "jest": "30.0.5",
+    "nodemon": "3.1.10",
+    "prettier": "3.6.2"
+  }
+}

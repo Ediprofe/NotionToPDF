@@ -1,0 +1,55 @@
+# Configuración Principal del Sistema
+# ====================================
+
+# Configuración de salida
+output:
+  format: "A4"
+  margin:
+    top: "20mm"
+    bottom: "20mm"
+    left: "15mm"
+    right: "15mm"
+  displayHeaderFooter: false
+  printBackground: true
+  preferCSSPageSize: true
+
+# Configuración de procesamiento
+processing:
+  insertPageBreaksOnH1: true
+  generateTOC: true
+  processMath: true
+  highlightCode: true
+
+# Rutas por defecto
+paths:
+  templates: "./src/templates"
+  styles: "./src/templates/styles"
+  output: "./examples/output"
+
+# Configuración de temas
+themes:
+  mathematics:
+    primaryColor: "#DC3545"
+    secondaryColor: "#C82333"
+    accentColor: "#F8D7DA"
+  physics:
+    primaryColor: "#007BFF"
+    secondaryColor: "#0056B3"
+    accentColor: "#D1ECF1"
+  chemistry:
+    primaryColor: "#FF6B35"
+    secondaryColor: "#E85A2A"
+    accentColor: "#FFE4DC"
+  science:
+    primaryColor: "#28A745"
+    secondaryColor: "#1E7E34"
+    accentColor: "#D4EDDA"
+  default:
+    primaryColor: "#6C757D"
+    secondaryColor: "#545B62"
+    accentColor: "#E2E3E5"
+
+# Logging
+logging:
+  level: "info"
+  colorize: true
