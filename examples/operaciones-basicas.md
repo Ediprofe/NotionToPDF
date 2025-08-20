@@ -2,7 +2,7 @@
 title: "Operaciones básicas"
 author: "Prof. Edilberto Suárez"
 website: "ediprofe.com"
-subject: "ciencias"
+subject: "matemáticas"
 showTOC: true
 ---
 
