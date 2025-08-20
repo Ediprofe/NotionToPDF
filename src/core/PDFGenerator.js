@@ -105,7 +105,28 @@ class PDFGenerator {
         path: outputPath,
         format: pdfConfig.format,
         margin: pdfConfig.margin,
-        displayHeaderFooter: pdfConfig.displayHeaderFooter,
+        displayHeaderFooter: true,
+        headerTemplate: '<div></div>', // Header vacío
+        footerTemplate: `
+          <div style="
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, ${themeColors.primaryColor} 0%, ${themeColors.secondaryColor} 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          ">
+            <span style="opacity: 0.95;">${metadata.website || ''}</span>
+            <span style="opacity: 0.95;">Página <span class="pageNumber"></span></span>
+          </div>
+        `,
         printBackground: pdfConfig.printBackground,
         preferCSSPageSize: pdfConfig.preferCSSPageSize,
         // CORRECCIÓN: Configuraciones adicionales para mejor calidad
