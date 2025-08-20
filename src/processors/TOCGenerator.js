@@ -1,61 +1,48 @@
 // ARCHIVO: src/processors/TOCGenerator.js
-// Genera tabla de contenidos automática con manejo correcto del primer H1
+// Generador de tabla de contenidos
 import { JSDOM } from 'jsdom';
 
 class TOCGenerator {
   generate(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
+    
+    // Buscar todos los headings
     const headings = document.querySelectorAll('h1, h2, h3');
     
     if (headings.length === 0) {
-      return {
-        toc: '',
-        processedHTML: html
-      };
+      return { toc: '', processedHTML: html };
     }
     
-    let tocHTML = '<ul class="toc-list">';
-    let currentLevel = 0;
+    let tocHTML = '<nav class="table-of-contents">\n';
+    tocHTML += '  <h2>Tabla de Contenidos</h2>\n';
+    tocHTML += '  <ul>\n';
     
-    headings.forEach((heading, index) => {
+    let processedHTML = html;
+    let headingCounter = 0;
+    
+    headings.forEach(heading => {
       const level = parseInt(heading.tagName[1]);
       const text = heading.textContent;
-      const id = `heading-${index}`;
+      const id = `heading-${++headingCounter}`;
       
-      // Añadir ID al heading para enlaces
+      // Añadir ID al heading en el HTML
       heading.setAttribute('id', id);
       
-      // CORRECCIÓN: Marcar el primer H1 como "después del TOC"
-      if (index === 0 && level === 1) {
-        heading.classList.add('after-toc');
-      }
-      
-      // Ajustar nivel de anidación
-      if (level > currentLevel) {
-        tocHTML += '<ul>';
-      } else if (level < currentLevel) {
-        for (let i = currentLevel; i > level; i--) {
-          tocHTML += '</ul></li>';
-        }
-      } else if (currentLevel > 0) {
-        tocHTML += '</li>';
-      }
-      
-      tocHTML += `<li class="toc-item toc-item-h${level}">`;
-      tocHTML += `<a href="#${id}">${text}</a>`;
-      
-      currentLevel = level;
+      // Añadir entrada al TOC con indentación según nivel
+      const indent = '    '.repeat(level - 1);
+      tocHTML += `${indent}<li><a href="#${id}">${text}</a></li>\n`;
     });
     
-    // Cerrar listas abiertas
-    for (let i = currentLevel; i > 0; i--) {
-      tocHTML += '</li></ul>';
-    }
+    tocHTML += '  </ul>\n';
+    tocHTML += '</nav>\n';
+    
+    // Actualizar el HTML con los IDs añadidos
+    processedHTML = dom.serialize();
     
     return {
       toc: tocHTML,
-      processedHTML: dom.serialize()
+      processedHTML: processedHTML
     };
   }
 }

@@ -1,5 +1,5 @@
 // ARCHIVO: src/utils/logger.js
-// Sistema de logging centralizado
+// Sistema de logging centralizado - VERSIÓN CORREGIDA
 import chalk from 'chalk';
 
 class Logger {
@@ -48,4 +48,6 @@ class Logger {
   }
 }
 
+// Exportar la clase, no la instancia
+export { Logger };
 export default new Logger();
