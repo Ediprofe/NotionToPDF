@@ -71,7 +71,7 @@
             font-weight: 500;
         }
         
-        /* Contenido principal */
+        /* CORRECCIÓN 1: Contenido principal con espaciado consistente */
         .main-content {
             margin-top: 80px;
             padding: 40px;
@@ -80,13 +80,15 @@
             margin-right: auto;
         }
         
-        /* Tabla de contenidos */
+        /* CORRECCIÓN 2: Tabla de contenidos con salto de página garantizado */
         .toc-container {
             background: var(--accent-color);
             border-radius: var(--border-radius);
             padding: 30px;
-            margin-bottom: 40px;
+            margin-bottom: 0; /* Sin margen inferior */
             page-break-after: always;
+            /* Forzar salto de página en todos los navegadores */
+            break-after: page;
         }
         
         .toc-title {
@@ -132,19 +134,34 @@
             padding-left: 60px;
         }
         
-        /* Tipografía */
+        /* CORRECCIÓN 3: Container del documento con espaciado consistente */
+        .document-content {
+            /* Cuando hay TOC, este elemento comienza en nueva página */
+            /* Cuando no hay TOC, mantiene el espaciado normal */
+        }
+        
+        /* CORRECCIÓN 4: Tipografía con manejo consistente de primer elemento */
         h1 {
             font-size: 32px;
             font-weight: 700;
             color: var(--text-color);
-            margin: 40px 0 20px;
+            margin: 40px 0 20px; /* Margen consistente para todos los H1 */
             page-break-before: always;
             letter-spacing: -0.5px;
         }
         
-        h1:first-child {
-            page-break-before: auto;
+        /* SOLUCIÓN ESPECÍFICA: Primer H1 después del TOC o al inicio */
+        .document-content > h1:first-child,
+        .main-content > .document-content > h1:first-child {
+            page-break-before: auto; /* No salto antes del primer H1 del contenido */
+            margin-top: 0; /* Sin margen superior para consistencia */
+            padding-top: 20px; /* Padding para espaciado visual */
+        }
+        
+        /* Cuando NO hay TOC, el primer H1 debe tener margen normal */
+        .main-content > .document-content > h1:first-child:not(.after-toc) {
             margin-top: 0;
+            padding-top: 0;
         }
         
         h2 {
@@ -198,12 +215,16 @@
             overflow-x: auto;
         }
         
-        /* Saltos de página */
+        /* CORRECCIÓN 5: Saltos de página mejorados */
         .page-break {
             page-break-after: always;
+            break-after: page;
+            height: 0;
+            margin: 0;
+            padding: 0;
         }
         
-        /* Print specific */
+        /* Print specific - CORRECCIONES DE PRINT */
         @media print {
             .header-ribbon {
                 position: fixed;
@@ -213,6 +234,23 @@
             
             .main-content {
                 margin-top: 80px;
+            }
+            
+            /* Asegurar saltos de página en impresión */
+            .toc-container {
+                page-break-after: always !important;
+                break-after: page !important;
+            }
+            
+            .page-break {
+                page-break-after: always !important;
+                break-after: page !important;
+            }
+            
+            /* Evitar saltos de página no deseados */
+            h1, h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
             }
         }
     </style>
